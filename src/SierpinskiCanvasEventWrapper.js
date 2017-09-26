@@ -49,7 +49,7 @@ class SierpinskiCanvasEventWrapper extends React.Component {
                             offsetY={this.state.offsetY}/>
         </div>
         <p>
-          Mouse navigation: drag with left mouse button to pan, use your mouse wheel to zoom<br/>
+          Mouse navigation: drag with primary mouse button to pan, use mouse wheel to zoom<br/>
           Keyboard navigation: press Tab to focus on the canvas and use WASD to pan, E/Q to zoom, X to reset view
         </p>
         <p><a href="https://github.com/alfonsomunozpomer/sierpinski-react">Source code available on GitHub</a></p>
@@ -76,11 +76,13 @@ class SierpinskiCanvasEventWrapper extends React.Component {
   _handleMouseDown(event) {
     event.preventDefault()
 
-    this.setState({
-      drag: true,
-      dragX: event.clientX,
-      dragY: event.clientY
-    })
+    if (event.button === 0) {
+      this.setState({
+        drag: true,
+        dragX: event.clientX,
+        dragY: event.clientY
+      })
+    }
   }
 
   _handleMouseUp(event) {
@@ -110,31 +112,31 @@ class SierpinskiCanvasEventWrapper extends React.Component {
   _handleKeyPress(event) {
     event.preventDefault()
 
-    if(event.key === `e`) {
+    if(event.key === `e` || event.key === `E`) {
       this.setState({
         scale: this.state.scale + KEY_ZOOM_STEP,
       })
-    } else if (event.key === `q`) {
+    } else if (event.key === `q` || event.key === `Q`) {
       this.setState({
         scale: this.state.scale - KEY_ZOOM_STEP
       })
-    } else if (event.key === `w`) {
+    } else if (event.key === `w` || event.key === `W`) {
       this.setState({
         offsetY: this.state.offsetY - KEY_PAN_STEP
       })
-    } else if (event.key === `s`) {
+    } else if (event.key === `s` || event.key === `S`) {
       this.setState({
         offsetY: this.state.offsetY + KEY_PAN_STEP
       })
-    } else if (event.key === `a`) {
+    } else if (event.key === `a` || event.key === `A`) {
       this.setState({
         offsetX: this.state.offsetX - KEY_PAN_STEP
       })
-    } else if (event.key === `d`) {
+    } else if (event.key === `d` || event.key === `D`) {
       this.setState({
         offsetX: this.state.offsetX + KEY_PAN_STEP
       })
-    } else if (event.key === `x`) {
+    } else if (event.key === `x` || event.key === `X`) {
       this.setState({
         scale: 1.0,
         offsetX: 0,
