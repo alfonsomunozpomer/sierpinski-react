@@ -5,6 +5,8 @@ Clone the repo, run `yarn install` and `webpack-dev-server`. Run some tests with
 
 ## Areas for improvement
 - Generate triangle paths in a worker and redraw when they are ready
+- Only draw/generate visible triangles
+- Use WebGL
 - Zooming relative to to the mouse pointer
 - Touch events
 - More meaningful tests
