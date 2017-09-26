@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Demo</title>
+
+    <link rel="stylesheet" href="foundation.css" type="text/css" media="all" />
+</head>
+
+<body>
+<div id="wrapper" class="row">
+    <div id="content" class="small-12 columns text-center">
+        <h1>Sierpinski Triangle Explorer</h1>
+        <div id="target"></div>
+    </div>
+</div>
+</body>
+
+<script src="vendorCommons.bundle.js"></script>
+<script src="sierpinskiTriangleExplorer.bundle.js"></script>
+
+<script>
+  sierpinskiTriangleExplorer.render({width: 700}, 'target')
+</script>
+
+</html>
