@@ -4,6 +4,7 @@
 Clone the repo, run `yarn install` and `webpack-dev-server`. Run some tests with `yarn test`. You can see it working at https://alfonsomunozpomer.github.io/sierpinski.
 
 ## Areas for improvement
-- Zooming relative to to the pointer
+- Generate triangle paths in a worker and redraw when they are ready
+- Zooming relative to to the mouse pointer
 - Touch events
 - More meaningful tests
