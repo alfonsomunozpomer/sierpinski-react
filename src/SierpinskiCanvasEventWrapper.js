@@ -61,9 +61,9 @@ class SierpinskiCanvasEventWrapper extends React.Component {
   _handleWheel(event) {
     event.preventDefault()
 
-    const rect = this.wrapperRef.getBoundingClientRect()
-    const x = event.clientX - rect.left
-    const y = event.clientY - rect.top
+    // const rect = this.wrapperRef.getBoundingClientRect()
+    // const x = event.clientX - rect.left
+    // const y = event.clientY - rect.top
 
     if (Math.log2(Math.round(this.state.scale)) === Math.round(Math.log2(this.state.scale))) {
       this.setState({
@@ -73,8 +73,6 @@ class SierpinskiCanvasEventWrapper extends React.Component {
 
     this.setState({
         scale: Math.max(this.state.scale + this.state.zoomStep * event.deltaY, MIN_SCALE)
-        // offsetX: x - rect.right / 2,
-        // offsetY: y - rect.bottom / 2
     })
   }
 

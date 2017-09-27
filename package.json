@@ -1,6 +1,6 @@
 {
   "name": "sierpinski-react",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Sierpinski triangle explorer in React with <canvas>",
   "main": "lib/index.js",
   "scripts": {
