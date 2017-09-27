@@ -16,6 +16,7 @@ class SierpinskiCanvasEventWrapper extends React.Component {
       scale: this.props.scale,
       offsetX: this.props.offsetX,
       offsetY: this.props.offsetY,
+      zoomStep: 0.001,
       drag: false,
       dragX: 0,
       dragY: 0
@@ -64,10 +65,14 @@ class SierpinskiCanvasEventWrapper extends React.Component {
     const x = event.clientX - rect.left
     const y = event.clientY - rect.top
 
-    console.log(`${x} ${y}`)
+    if (Math.log2(Math.round(this.state.scale)) === Math.round(Math.log2(this.state.scale))) {
+      this.setState({
+        zoomStep: Math.round(this.state.scale) * WHEEL_ZOOM_STEP
+      })
+    }
 
     this.setState({
-        scale: Math.max(this.state.scale + WHEEL_ZOOM_STEP * event.deltaY, MIN_SCALE)
+        scale: Math.max(this.state.scale + this.state.zoomStep * event.deltaY, MIN_SCALE)
         // offsetX: x - rect.right / 2,
         // offsetY: y - rect.bottom / 2
     })
@@ -104,7 +109,7 @@ class SierpinskiCanvasEventWrapper extends React.Component {
         dragX: event.clientX,
         dragY: event.clientY,
         offsetX: this.state.offsetX + deltaOffsetX,
-        offsetY: this.state.offsetY + deltaOffsetY,
+        offsetY: this.state.offsetY + deltaOffsetY
       })
     }
   }
