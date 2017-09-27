@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import {Rectangle} from './Geometry'
 import Sierpinski from './Sierpinski'
 
 const SIN_PI_3_RAD = Math.sin(Math.PI / 3)
@@ -9,15 +10,28 @@ const HORIZONTAL_PADDING = 50
 const DRAW_LIMIT = 10
 const ANIMATION_FRAMES = 5
 
+const triangleToPath = (t) => {
+  const trianglePath = new Path2D()
+  trianglePath.moveTo(t.points[0].x, t.points[0].y)
+  trianglePath.lineTo(t.points[1].x, t.points[1].y)
+  trianglePath.lineTo(t.points[2].x, t.points[2].y)
+  return trianglePath
+}
+
+const subdivideEquilateralTriangle = (t) => {
+  return [
+    new EqTriangle(t.centroid.x - t.sideLength / 4, t.centroid.y + (t.height / 3 - t.height / 6), t.sideLength / 2),
+    new EqTriangle(t.centroid.x + t.sideLength / 4, t.centroid.y + (t.height / 3 - t.height / 6), t.sideLength / 2),
+    new EqTriangle(t.centroid.x, t.centroid.y - t.height / 3, t.sideLength / 2)
+  ]
+}
+
 class SierpinskiCanvas extends React.Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      sierpinskiTrianglePaths:
-        Sierpinski(
-          this.props.width / 2, 2 * SIN_PI_3_RAD * this.props.width / 3, this.props.width - HORIZONTAL_PADDING,
-          Math.round(DRAW_LIMIT / this.props.scale))
+      depth: 6
     }
   }
 
@@ -31,10 +45,12 @@ class SierpinskiCanvas extends React.Component {
   }
 
   componentDidMount() {
-    this.state.sierpinskiTrianglePaths.forEach((path) => this.canvasContext.fill(path))
+    Sierpinski(this.props.width / 2, 2 * SIN_PI_3_RAD * this.props.width / 3, this.props.width, this.state.depth)
+      .map(triangleToPath)
+      .forEach((path) => this.canvasContext.fill(path))
   }
 
-  // Only re-render if width changes, otherwise we’ll handle a nifty animation in componentWillReceiveProps
+  // Only re-render if width changes, otherwise we’ll do a nifty animation in componentWillReceiveProps
   shouldComponentUpdate(nextProps) {
     return nextProps.width !== this.props.width
   }
@@ -49,14 +65,17 @@ class SierpinskiCanvas extends React.Component {
     let thisOffsetY = this.props.offsetY
     let frameCount = 0
 
-    if (Math.round(10 / nextProps.scale) !== Math.round(10 / this.props.scale)) {
-      this.setState({
-        sierpinskiTrianglePaths:
-        Sierpinski(
-          this.props.width / 2, 2 * SIN_PI_3_RAD * this.props.width / 3, this.props.width - HORIZONTAL_PADDING,
-          Math.round(DRAW_LIMIT / nextProps.scale))
-      })
-    }
+    // Minimal rectangle that covers this and next visible rectangle
+    const nextRectangle = new Rectangle(
+      -nextProps.offsetX / nextProps.scale,
+      -nextProps.offsetY / nextProps.scale,
+     (-nextProps.offsetX + nextProps.width) / nextProps.scale,
+     (-nextProps.offsetY + nextProps.width) / nextProps.scale)
+
+    const nextTriangles =
+      Sierpinski(
+        this.props.width / 2, 2 * SIN_PI_3_RAD * this.props.width / 3, this.props.width,
+        this.state.depth + Math.log2(nextProps.scale), nextRectangle)
 
     const _animationLoop = () => {
       thisScale = thisScale + scaleIncrement
@@ -65,7 +84,7 @@ class SierpinskiCanvas extends React.Component {
 
       this.canvasContext.clearRect(0, 0, this.props.width, this.props.width)
       this.canvasContext.setTransform(thisScale, 0, 0, thisScale, thisOffsetX, thisOffsetY)
-      this.state.sierpinskiTrianglePaths.forEach((triangle) => this.canvasContext.fill(triangle))
+      nextTriangles.map(triangleToPath).forEach((path) => this.canvasContext.fill(path))
       this.canvasContext.setTransform(1, 0, 0, 1, 0, 0)
 
       frameCount = frameCount + 1
